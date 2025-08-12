@@ -1,0 +1,1 @@
+ Full Arabic Flutter app with Firebase, Google Maps, and notifications when an order is placed.
