@@ -14,7 +14,14 @@ class CustomButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-      child: Text(label, style: const TextStyle(fontSize: 16)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.arrow_forward, color: Colors.white),
+          const SizedBox(width: 8),
+          Text(label, style: const TextStyle(fontSize: 16)),
+        ],
+      ),
     );
   }
 }

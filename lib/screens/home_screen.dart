@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'second_screen.dart';
-import '../widgets/custom_button.dart';
+import 'phone_auth_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,14 +9,14 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       body: Center(
-        child: CustomButton(
-          label: 'Go to Page 2',
+        child: ElevatedButton(
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SecondScreen()),
+              MaterialPageRoute(builder: (context) => const PhoneAuthScreen()),
             );
           },
+          child: const Text('Start Phone Auth'),
         ),
       ),
     );
