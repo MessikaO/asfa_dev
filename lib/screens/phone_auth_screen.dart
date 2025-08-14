@@ -1,81 +1,58 @@
 import 'package:flutter/material.dart';
 import 'otp_verification_screen.dart';
 
-class PhoneAuthScreen extends StatelessWidget {
+class PhoneAuthScreen extends StatefulWidget {
   const PhoneAuthScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Controller to get text from TextField
-    final TextEditingController phoneController = TextEditingController();
+  State<PhoneAuthScreen> createState() => _PhoneAuthScreenState();
+}
 
+class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
+  final _phoneController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign In'),
-        backgroundColor: Colors.blue,
-      ),
+      appBar: AppBar(title: const Text('Phone Authentication')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0), // space around edges
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               'Enter your phone number',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18),
             ),
-            const SizedBox(height: 16),
-
-            // Country code + phone number
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 14,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Text('+213', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                hintText: '+213 555 123 456',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-            const SizedBox(height: 24),
-
-            // Send code button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                final phone = _phoneController.text.trim();
+                if (phone.isNotEmpty) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OTPVerificationScreen(
-                        phoneNumber: phoneController.text,
-                      ),
+                      builder: (_) => OTPVerificationScreen(phoneNumber: phone),
                     ),
                   );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: const Text('Send Code', style: TextStyle(fontSize: 16)),
-              ),
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter phone number')),
+                  );
+                }
+              },
+              child: const Text('Send Code'),
             ),
           ],
         ),
