@@ -9,52 +9,67 @@ class PhoneAuthScreen extends StatefulWidget {
 }
 
 class _PhoneAuthScreenState extends State<PhoneAuthScreen> {
-  final _phoneController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+
+  void _sendCode() {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    // Simulate sending code
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() => _isLoading = false);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              OTPVerificationScreen(phoneNumber: _phoneController.text.trim()),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Phone Authentication')),
+      appBar: AppBar(title: const Text('تسجيل الدخول برقم الهاتف')),
       body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Enter your phone number',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                hintText: '+213 555 123 456',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'أدخل رقم الهاتف',
+                  prefixText: "+",
+                  border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Phone number is required";
+                  }
+                  if (!RegExp(r'^[0-9]{8,15}$').hasMatch(value.trim())) {
+                    return "Enter a valid phone number";
+                  }
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                final phone = _phoneController.text.trim();
-                if (phone.isNotEmpty) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => OTPVerificationScreen(phoneNumber: phone),
+              const SizedBox(height: 20),
+              _isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : ElevatedButton(
+                      onPressed: _sendCode,
+                      child: const Text('إرسال رمز التحقق'),
                     ),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter phone number')),
-                  );
-                }
-              },
-              child: const Text('Send Code'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

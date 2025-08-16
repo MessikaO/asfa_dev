@@ -9,19 +9,12 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.arrow_forward, color: Colors.white),
-          const SizedBox(width: 8),
-          Text(label, style: const TextStyle(fontSize: 16)),
-        ],
-      ),
+      onPressed: onPressed,
+      child: Text(label),
     );
   }
 }

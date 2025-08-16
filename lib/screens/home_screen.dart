@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'phone_auth_screen.dart';
+import '../widgets/custom_button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,16 +8,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(title: const Text('الرئيسية')),
       body: Center(
-        child: ElevatedButton(
+        child: CustomButton(
+          label: 'الانتقال إلى الصفحة 2',
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const PhoneAuthScreen()),
             );
           },
-          child: const Text('Start Phone Auth'),
         ),
       ),
     );

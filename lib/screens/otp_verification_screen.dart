@@ -10,60 +10,64 @@ class OTPVerificationScreen extends StatefulWidget {
 }
 
 class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
-  final _otpController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+
+  void _verifyOTP() {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    // Simulate OTP check
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("OTP Verified Successfully")),
+      );
+      // TODO: Navigate to next screen after successful login
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Verify OTP')),
+      appBar: AppBar(title: const Text('التحقق من الرمز')),
       body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Code sent to ${widget.phoneNumber}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _otpController,
-              keyboardType: TextInputType.number,
-              maxLength: 6,
-              decoration: InputDecoration(
-                hintText: 'Enter 6-digit OTP',
-                counterText: '',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Code sent to: ${widget.phoneNumber}"),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: _otpController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'أدخل رمز التحقق',
+                  border: OutlineInputBorder(),
                 ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "OTP is required";
+                  }
+                  if (value.trim().length != 6) {
+                    return "OTP must be 6 digits";
+                  }
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                final otp = _otpController.text.trim();
-                if (otp.length == 6) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('OTP Verified!')),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Enter a valid 6-digit code')),
-                  );
-                }
-              },
-              child: const Text('Verify'),
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Resending code...')),
-                );
-              },
-              child: const Text('Resend code'),
-            ),
-          ],
+              const SizedBox(height: 20),
+              _isLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : ElevatedButton(
+                      onPressed: _verifyOTP,
+                      child: const Text('تحقق'),
+                    ),
+            ],
+          ),
         ),
       ),
     );
